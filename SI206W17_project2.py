@@ -11,6 +11,7 @@
 
 ## Import statements
 import unittest
+import re
 import json
 import requests
 import tweepy
@@ -42,7 +43,6 @@ try:
 except:
 	CACHED_DICTION = {}
 
-
 ## PART 1 - Define a function find_urls.
 ## INPUT: any string
 ## RETURN VALUE: a list of strings that represents all of the URLs in the input string
@@ -53,8 +53,12 @@ except:
 ##["http://etsy.com","http://instagram.com"]
 ## find_urls("the internet is awesome #worldwideweb") should return [], empty list
 
+#work on this 
+def find_urls(x):
 
-
+	url = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),])+', x)
+	
+	return url
 
 
 
@@ -132,15 +136,15 @@ class CachingTests(unittest.TestCase):
 		jv = json.loads(s)
 		self.assertTrue("twitter_University of Michigan" in jv, "Checking whether the Twitter University of Michigan identifier is correctly in the cache")
 
-# class PartOne(unittest.TestCase):
-# 	def test_findurls_oneurl(self):
-# 		self.assertEqual(find_urls("http://www.google.com is a great site"),["http://www.google.com"])
-# 	def test_findurls_multurls(self):
-# 		self.assertEqual(find_urls("I love looking at websites like http://etsy.com and http://instagram.com and lol.com and stuff"),["http://etsy.com","http://instagram.com"])
-# 	def test_findurls_multurls_all(self):
-# 		self.assertEqual(find_urls("I love looking at websites like http://etsy.com and http://instagram.com and https://www.bbc.co.uk and stuff"),["http://etsy.com","http://instagram.com","https://www.bbc.co.uk"])
-# 	def test_findurls_none(self):
-# 		self.assertEqual(find_urls("the internet is awesome #worldwideweb"),[])
+class PartOne(unittest.TestCase):
+	def test_findurls_oneurl(self):
+		self.assertEqual(find_urls("http://www.google.com is a great site"),["http://www.google.com"])
+	def test_findurls_multurls(self):
+		self.assertEqual(find_urls("I love looking at websites like http://etsy.com and http://instagram.com and lol.com and stuff"),["http://etsy.com","http://instagram.com"])
+	def test_findurls_multurls_all(self):
+		self.assertEqual(find_urls("I love looking at websites like http://etsy.com and http://instagram.com and https://www.bbc.co.uk and stuff"),["http://etsy.com","http://instagram.com","https://www.bbc.co.uk"])
+	def test_findurls_none(self):
+		self.assertEqual(find_urls("the internet is awesome #worldwideweb"),[])
 
 # class PartTwo(unittest.TestCase):
 # 	def test_list_len(self):
