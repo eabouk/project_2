@@ -75,7 +75,14 @@ def find_urls(x):
 ## Start with this page: https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All  
 ## End with this page: https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All&page=11 
 
+def get_umsi_data():
+	base_url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
+	requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
 
+	for item in CACHE_DICTION:
+		
+
+	return
 
 
 
