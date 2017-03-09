@@ -35,11 +35,13 @@ api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
 ## Write the code to begin your caching pattern setup here.
 
 CACHE_FILE = "206project2_caching.json"
-
+CACHE_DICTION = {}
 try:
-	cached_file_obj = open(CACHE_FILE, "r")
+	cached_file_obj = open(CACHE_FILE, 'r')
 	contents_of_CF = cached_file_obj.read()
 	cached_dict = json.loads(contents_of_CF)
+	CACHE_DICTION = cached_dict
+	cached_file_obj.close()
 except:
 	CACHE_DICTION = {}
 
@@ -76,45 +78,53 @@ def find_urls(x):
 ## End with this page: https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All&page=11 
 
 def get_umsi_data():
-	hmtl_returns = []
+	final_list = []
 	base_url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
 	unique_identifier = requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
-	if unique_identifier in CACHE_DICTION:
-		return unique_identifier.text
+	unique_string = unique_identifier.text
+	URL = unique_identifier.url
+
+	if unique_string in CACHE_DICTION:
+		final_list.append(unique_string)
+
 	else: 
-		python_obj_data = json.loads(unique_identifier.text)
-		CACHE_DICTION[unique_identifier] = python_obj_data
+		CACHE_DICTION[URL] = unique_string
 		f = open(CACHE_FILE, 'w')
 		f.write(json.dumps(CACHE_DICTION))
+		#^this line is causing an error
 		f.close()
-	hmtl_returns.append(unique_identifier.text)
+		final_list.append(unique_string)
+		
 
 
-	count = 1
+	counter = 1
 	#count for pages in directory 
+	pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+	html_returns = []
 
-	for one in 11:
+	for item in pages:
+		#CREATE A NEW HTML_RETURN LIST HERE AND THEN SPLICE THEM TOGETHER AT THE END
 		base_url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
-		base_url = base_url + "&page=" + count
+		base_url = base_url + "&page=" + str(counter) + "&field_person_lastna_me_value="
 		#this is to make sure that the function loops through all 11 pages of the directory
 		unique_identifier = requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
+		unique_string = unique_identifier.text
+		URL = unique_identifier.url
 
 		#then we'll go through all the links for the entire directory and do the same thing
-		if unique_identifier in CACHE_DICTION:
-			html_returns = hmtl_returns.append(unique_identifier.text)
-			return unique_identifier.text
-
-		else: 
-			python_obj_data = json.loads(unique_identifier.text)
-			CACHE_DICTION[unique_identifier] = python_obj_data
+		if not unique_string in CACHE_DICTION:
+			CACHE_DICTION[URL] = unique_string
 			f = open(CACHE_FILE, 'w')
 			f.write(json.dumps(CACHE_DICTION))
 			f.close()
-		hmtl_returns.append(unique_identifier.text)
-		count += 1
 
-	print (html_returns)
-	return html_returns
+		html_returns.append(unique_string)
+		counter = counter + 1
+
+	for item in html_returns:
+		final_list.append(item)
+		#print ("PRINTING LIST", final_list)
+	return final_list
 
 
 
@@ -123,7 +133,7 @@ def get_umsi_data():
 ## PART 2 (b) - Create a dictionary saved in a variable umsi_titles 
 ## whose keys are UMSI people's names, and whose associated values are those people's titles, e.g. "PhD student" or 
 ## "Associate Professor of Information"...
-
+umsi_titles = {}
 
 
 
