@@ -133,10 +133,56 @@ def get_umsi_data():
 ## PART 2 (b) - Create a dictionary saved in a variable umsi_titles 
 ## whose keys are UMSI people's names, and whose associated values are those people's titles, e.g. "PhD student" or 
 ## "Associate Professor of Information"...
+url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
+response = requests.get(url, headers={'User-Agent': 'SI_CLASS'})
+htmldoc = response.text
+
+soup = BeautifulSoup(htmldoc,"html.parser")
+people = soup.find_all("div",{"class":"views-row"})
+
 umsi_titles = {}
+names = []
+titles = []
+
+
+for name in soup.find_all('div', class_= "field-item even", property="dc:title"):
+	name = name.text
+	names.append(name)
+
+for person in soup.find_all('div', class_="field field-name-field-person-titles field-type-text field-label-hidden"):
+	title = person.text.replace("\n", " ").strip()
+	titles.append(title)
+
+counter = 1
+	#count for pages in directory 
+pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+	
+for item in pages:
+		#CREATE A NEW HTML_RETURN LIST HERE AND THEN SPLICE THEM TOGETHER AT THE END
+	base_url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
+	base_url = base_url + "&page=" + str(counter) #+ "&field_person_lastna_me_value="
+		#this is to make sure that the function loops through all 11 pages of the directory
+	response = requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
+	htmldoc = response.text
+	soup = BeautifulSoup(htmldoc,"html.parser")
+	people = soup.find_all("div",{"class":"views-row"})
+
+	for name in soup.find_all('div', class_= "field-item even", property="dc:title"):
+		name = name.text
+		names.append(name)
+
+	for person in soup.find_all('div', class_="field field-name-field-person-titles field-type-text field-label-hidden"):
+		title = person.text.replace("\n", " ").strip()
+		titles.append(title)
+	#print("PRINT ME")
 
 
 
+i = 0
+for x in names:
+	umsi_titles[x] = titles[i]
+	i += 1
+print ("PRINTING KEYS", umsi_titles.keys())
 
 
 
