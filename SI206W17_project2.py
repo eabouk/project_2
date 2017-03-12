@@ -149,8 +149,12 @@ for name in soup.find_all('div', class_= "field-item even", property="dc:title")
 	names.append(name)
 
 for person in soup.find_all('div', class_="field field-name-field-person-titles field-type-text field-label-hidden"):
-	title = person.text.replace("\n", " ").strip()
-	titles.append(title)
+	title = person.text
+	if title == '':
+		title == ' '
+		titles.append(title)
+	else: 
+		titles.append(title)
 
 counter = 1
 	#count for pages in directory 
@@ -170,24 +174,20 @@ for item in range(1, 12):
 		names.append(name)
 
 	for person in soup.find_all('div', class_="field field-name-field-person-titles field-type-text field-label-hidden"):
-		title = person.text.replace("\n", " ").strip()
-		titles.append(title)
-	#print("PRINT ME")
+		title = person.text
+		if title == '':
+			title == ' '
+			titles.append(title)
+		else: 
+			titles.append(title)
 
-print ("PRINTING LEN NAMES AND TITLES", len(names), len(titles))
+	counter += 1
+
 
 i = 0
-for x in names:
-	if not x in umsi_titles:	
-		umsi_titles[x] = titles[i]
-	else:
-		break
+for x in range(len(titles)):
+	umsi_titles[names[x]] = titles[i]
 	i += 1
-	#THIS IS FAILING!!! ONLY 39 PEOPLE IN THIS DICTIONARY!!! 
-
-print ("PRINTING LEN DICTIONARY", len(umsi_titles))
-#print ("PRINTING KEYS", umsi_titles.keys())
-#part 2b is only getting 39 names from the UMSI directory... it's stopping at Yan Chen 
 
 
 
