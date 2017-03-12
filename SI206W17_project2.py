@@ -60,10 +60,7 @@ except:
 def find_urls(x):
 
 	url = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),])+', x)
-	
 	return url
-
-
 
 
 ## PART 2 (a) - Define a function called get_umsi_data.
@@ -82,7 +79,9 @@ def get_umsi_data():
 	final_list = []
 	base_url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
 	unique_identifier = requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
+	#unique_identifier is a response object
 	unique_string = unique_identifier.text
+	#unique_string is the text of that response object
 	URL = unique_identifier.url
 
 	if unique_string in CACHE_DICTION:
@@ -118,6 +117,7 @@ def get_umsi_data():
 	for item in html_returns:
 		if not item in CACHE_DICTION:
 			CACHE_DICTION[item.url] = item.text
+			#write the url as the dict key, the text of that as the value
 			f = open(CACHE_FILE, 'w')
 			f.write(json.dumps(CACHE_DICTION))
 			f.close()
@@ -186,6 +186,7 @@ for item in range(1, 12):
 
 i = 0
 for x in range(len(titles)):
+	#put everything from the list of titles and names into the dict
 	umsi_titles[names[x]] = titles[i]
 	i += 1
 
@@ -201,8 +202,9 @@ def get_five_tweets(string):
 	tweets_containing = api.search(q = string,lang = "en", rpp =5)
 	
 	new_string = "twitter_" + string
+	#just a formality
+	#tweets_containing["statuses"] is just a list of all the tweet attributes. It is all the data represented by a tweet.
 	if new_string not in CACHE_DICTION:
-
 		CACHE_DICTION[new_string] = tweets_containing["statuses"]
 		f = open(CACHE_FILE, 'w')
 		f.write(json.dumps(CACHE_DICTION))
@@ -223,7 +225,6 @@ def get_five_tweets(string):
 #print (get_five_tweets("University of Michigan"))
 five_tweets = get_five_tweets("University of Michigan")
 
-print("PRINTING FIVE TWEETS", five_tweets)
 
 ## PART 3 (c) - Iterate over the five_tweets list, invoke the find_urls function that you defined in Part 1 on each element of 
 ## the list, and accumulate a new list of each of the total URLs in all five of those tweets in a variable called tweet_urls_found. 
@@ -231,9 +232,6 @@ tweet_urls_found = []
 for tweet in five_tweets:
 	for url in find_urls(tweet):
 		tweet_urls_found.append(url)
-print ("PRINTING TWEET_URLS", tweet_urls_found)
-
-
 
 
 ########### TESTS; DO NOT CHANGE ANY CODE BELOW THIS LINE! ###########
